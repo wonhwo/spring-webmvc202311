@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @Repository //빈 등록
@@ -16,12 +17,15 @@ public class ScoreRepositoryImpl implements ScoreRepository{
     //인메모리 저장공간 해시맵
     //key : 학번, value : 성적정보
     private static final Map<Integer,Score>scoreMap;
+
+    //학번을 생성할 일련번호
+    private static int seq;
     //객체 초기화는 직접하는 것보다 주입받거나 생성자를 통해 처리하는 것이 좋음
     static {
         scoreMap=new HashMap<>();
-        Score s1 = new Score("뽀로로", 100, 100, 100, 1, 300, 100.0, Grade.A);
-        Score s2 = new Score("둘리", 50, 50, 50, 2, 150, 50, Grade.C);
-        Score s3 = new Score("타요", 80, 80, 80, 3, 240, 80, Grade.B);
+        Score s1 = new Score("뽀로로", 100, 100, 100, ++seq, 300, 100.0, Grade.A);
+        Score s2 = new Score("둘리", 50, 50, 50, ++seq, 150, 50, Grade.C);
+        Score s3 = new Score("타요", 80, 80, 80, ++seq, 240, 80, Grade.B);
 
         scoreMap.put(s1.getStuNum(),s1);
         scoreMap.put(s2.getStuNum(),s2);
@@ -37,12 +41,35 @@ public class ScoreRepositoryImpl implements ScoreRepository{
 //        }
         return new ArrayList<>(scoreMap.values())
                 .stream()
-                .sorted(Comparator.comparing(s->s.getStuNum()))
+                .sorted(comparing(s->s.getStuNum()))
                 .collect(toList());
     }
 
     @Override
+    public List<Score> findAll(String sort) {
+        Comparator<Score> comparing = comparing(Score::getName);
+        comparing = getScoreComparator(sort, comparing);
+        return new ArrayList<>(scoreMap.values())
+                .stream()
+                .sorted(comparing) //정령
+                .collect(toList());
+    }
+
+    private static Comparator<Score> getScoreComparator(String sort, Comparator<Score> comparing) {
+        switch (sort){
+            case "num":
+                comparing =comparing(Score::getStuNum);break;
+            case "name":
+                comparing =comparing(Score::getName);break;
+            case "avg":
+                comparing =comparing(Score::getAverage);break;
+        }
+        return comparing;
+    }
+
+    @Override
     public boolean save(Score score) {
+        score.setStuNum(++seq);
         if(scoreMap.containsKey(score.getStuNum())) return false;
         scoreMap.put(score.getStuNum(),score);
         return true;
