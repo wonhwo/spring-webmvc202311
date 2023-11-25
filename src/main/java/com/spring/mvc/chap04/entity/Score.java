@@ -45,4 +45,12 @@ public class Score {
         this.eng= scoreRequstDTO.getEng();
         this.math= scoreRequstDTO.getMath();
     }
+
+    public void changeScore(ScoreRequstDTO dto) {
+        this.kor=dto.getKor();
+        this.eng=dto.getEng();
+        this.math=dto.getMath();
+        calculateTotalAndAverage();
+        makeGrade();
+    }
 }

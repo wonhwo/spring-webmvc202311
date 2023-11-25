@@ -66,7 +66,7 @@ public class ScoreControllor {
 //        for(Score score: scoreList)
 //            dtoList.add(new ScoreResponseDTO(score));
 
-        List<ScoreResponseDTO> SRDTO= scoreList.stream()
+        List<ScoreResponseDTO> SRDTO = scoreList.stream()
                 .map(ScoreResponseDTO::new)
                 .collect(Collectors.toList());
 
@@ -111,8 +111,29 @@ public class ScoreControllor {
     @GetMapping("/detail")
     public String detail(int stuNum, Model model) {
         System.out.println("/score/detail GET !!");
+        retrieve(stuNum, model);
+        return "chap04/score-detail";
+    }
+    // 5. 수정 입력 폼을 열어주는 요청
+    // /score/modify : GET
+    @GetMapping("modify")
+    public String modify(int stuNum, Model model) {
+        System.out.println("/score/modify GET");
+        retrieve(stuNum, model);
+        return "chap04/score-modify";
+    }
+    @PostMapping("modify")
+    public String modify(int stuNum,ScoreRequstDTO dto) {
+        System.out.println("/score/modify POST");
+        // 수정의 흐름
+        //클라이언트가 수정할 데이터를 보냄
+        //-> 서버에 저장되어 있는 기존데이터를 조회해서 수정한다.
+        Score score = repository.findOne(stuNum);
+        score.changeScore(dto);
+        return "redirect:/score/detail?stuNum="+stuNum;
+    }
+    private void retrieve(int stuNum, Model model) {
         Score score = repository.findOne(stuNum);
         model.addAttribute("s", score);
-        return "chap04/score-detail";
     }
 }
