@@ -23,6 +23,7 @@ import com.spring.mvc.chap04.DTO.ScoreRequstDTO;
 import com.spring.mvc.chap04.DTO.ScoreResponseDTO;
 import com.spring.mvc.chap04.entity.Score;
 import com.spring.mvc.chap04.repository.ScoreRepository;
+import com.spring.mvc.chap04.service.ScoreService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
 public class ScoreControllor {
     //저장소에 의존하여 데이터 처리를 위임한다.
     //의존객체는 불변성을 가지는 것이 좋다.
-    private final ScoreRepository repository;
+    private final ScoreService service;
 
     //@Autowired //스프링에 등록된 빈을 자동주입
     // 생성자 주입을 사용하고 생성자가 단 하나 <- autowired 생략 조건
@@ -58,19 +59,15 @@ public class ScoreControllor {
     @GetMapping("/list")
     public String list(Model model, @RequestParam(defaultValue = "num") String sort) {
         System.out.println("/score/list GET !!");
+
+        List<ScoreResponseDTO> dtolist = service.getList(sort);
         //db에서 조회한 모든데이터
-        List<Score> scoreList = repository.findAll(sort);
 //        System.out.println("scoreList = " + scoreList);
 //        //클라이언트가 필요한 정제된 데이터
 //        List<ScoreResponseDTO> dtoList = new ArrayList<>();
 //        for(Score score: scoreList)
 //            dtoList.add(new ScoreResponseDTO(score));
-
-        List<ScoreResponseDTO> SRDTO = scoreList.stream()
-                .map(ScoreResponseDTO::new)
-                .collect(Collectors.toList());
-
-        model.addAttribute("sList", SRDTO);
+        model.addAttribute("sList", dtolist);
         return "chap04/score-list";
     }
 
@@ -81,8 +78,7 @@ public class ScoreControllor {
         System.out.println("scoreRequstDTO = " + scoreRequstDTO);
 
         //DTO를 엔터티로 변환 - > 데이터 생성
-        Score score = new Score(scoreRequstDTO);
-        repository.save(score);
+        service.insertScore(scoreRequstDTO);
         /*
         forward vs redirect
         - 포워드는 요청 리소스를 그대로 전달해줌.
@@ -103,7 +99,7 @@ public class ScoreControllor {
     public String remove(HttpServletRequest request, @PathVariable int stuNum) {
         System.out.printf("/score/remove %s !!\n", request.getMethod());
         System.out.println("stuNum = " + stuNum);
-        repository.delete(stuNum);
+        service.deleteScore(stuNum);
         return "redirect:/score/list";
     }
 
@@ -128,12 +124,12 @@ public class ScoreControllor {
         // 수정의 흐름
         //클라이언트가 수정할 데이터를 보냄
         //-> 서버에 저장되어 있는 기존데이터를 조회해서 수정한다.
-        Score score = repository.findOne(stuNum);
-        score.changeScore(dto);
+        service.updateScore(stuNum,dto);
+
         return "redirect:/score/detail?stuNum="+stuNum;
     }
     private void retrieve(int stuNum, Model model) {
-        Score score = repository.findOne(stuNum);
+        Score score = service.retrieve(stuNum);
         model.addAttribute("s", score);
     }
 }
