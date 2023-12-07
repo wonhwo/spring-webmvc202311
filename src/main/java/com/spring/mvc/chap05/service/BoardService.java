@@ -5,17 +5,20 @@ import com.spring.mvc.chap05.dto.BoardListResponseDTO;
 import com.spring.mvc.chap05.dto.BoardWriteRequestDTO;
 import com.spring.mvc.chap05.entity.Board;
 import com.spring.mvc.chap05.repsitory.BoardRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
+
+    public BoardService(@Qualifier("dbRepo1") BoardRepository boardRepository) {
+        this.boardRepository = boardRepository;
+    }
 
     // 목록 조회 중간처리
     public List<BoardListResponseDTO> getList() {
