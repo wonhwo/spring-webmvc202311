@@ -6,6 +6,18 @@ import lombok.*;
 /***
  * 엔터티 클래스
  * - 데이터베이스에 저장할 데이터를 자바클래스에 매칭
+ *
+ * -- 성적 테이블 생성하기
+ * create table tbl_score (
+ *     stu_num INT(10) PRIMARY KEY auto_increment,
+ *     stu_name VARCHAR(255) NOT NULL ,
+ *     kor INT(3) NOT NULL,
+ *     eng INT(3) NOT NULL,
+ *     math INT(3) NOT NULL,
+ *     total INT(3),
+ *     average float(5,2),
+ *     grade CHAR(1)
+ * );
  */
 @Setter @Getter
 @ToString @EqualsAndHashCode

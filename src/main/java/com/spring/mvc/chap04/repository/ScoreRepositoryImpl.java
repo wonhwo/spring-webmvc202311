@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
-@Repository //빈 등록
+@Repository("mRepo") //빈 등록
 public class ScoreRepositoryImpl implements ScoreRepository{
 
     //인메모리 저장공간 해시맵
