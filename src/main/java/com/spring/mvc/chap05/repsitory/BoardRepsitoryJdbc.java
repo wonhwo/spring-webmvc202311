@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Repository("dbRepo1")
@@ -16,7 +15,7 @@ public class BoardRepsitoryJdbc implements BoardRepository{
 
     @Override
     public List<Board> findAll() {
-        String sql="select * from tbl_board";
+        String sql="select * from tbl_board ORDER BY board_no DESC";
         return template.query(sql,(rs,rn)->new Board(rs));
     }
 
@@ -38,5 +37,13 @@ public class BoardRepsitoryJdbc implements BoardRepository{
     public boolean deleteByNo(int boardNo) {
         String sql="DELETE FROM tbl_board WHERE board_no = ?";
         return template.update(sql,boardNo)==1;
+    }
+
+    @Override
+    public void updateViewCount(int boardNo) {
+        String sql = "UPDATE tbl_board " +
+                "SET view_count = view_count + 1 " +
+                "WHERE board_no = ?";
+        template.update(sql, boardNo);
     }
 }

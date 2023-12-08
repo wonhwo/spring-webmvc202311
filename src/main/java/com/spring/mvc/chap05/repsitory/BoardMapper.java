@@ -1,7 +1,12 @@
 package com.spring.mvc.chap05.repsitory;
+
 import com.spring.mvc.chap05.entity.Board;
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
-public interface BoardRepository {
+
+@Mapper
+public interface BoardMapper {
     //전체찾기
     List<Board> findAll();
     //게시물 찾기
@@ -12,7 +17,5 @@ public interface BoardRepository {
     // 게시물 삭제
     boolean deleteByNo(int boardNo);
     //조회수 상승
-    default void updateViewCount(int boardNo){}
-
-
+    boolean updateViewCount(int boardNo);
 }
