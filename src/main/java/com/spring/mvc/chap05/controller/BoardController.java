@@ -1,5 +1,6 @@
 package com.spring.mvc.chap05.controller;
 
+import com.spring.mvc.chap05.common.Page;
 import com.spring.mvc.chap05.dto.BoardListResponseDTO;
 import com.spring.mvc.chap05.dto.BoardWriteRequestDTO;
 import com.spring.mvc.chap05.service.BoardService;
@@ -19,9 +20,10 @@ public class BoardController {
     private final BoardService boardService;
     // 1. 목록 조회 요청 (/board/list : GET)
     @GetMapping("/list")
-    public String list(Model model){
+    public String list(Page page, Model model){
         System.out.println("GET!!!/board/list");
-        List<BoardListResponseDTO> dtoList = boardService.getList();
+        System.out.println(page);
+        List<BoardListResponseDTO> dtoList = boardService.getList(page);
         model.addAttribute("bList",dtoList);
         return "chap05/list";
     }

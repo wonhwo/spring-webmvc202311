@@ -4,6 +4,7 @@
 <mapper namespace="com.spring.mvc.chap05.repsitory.BoardMapper">
     <select id="findAll" resultType="board">
         select * from tbl_board ORDER BY board_no DESC
+        LIMIT #{pageStart},#{amount}
     </select>
     <select id="findOne" resultType="board">
         SELECT * FROM tbl_board WHERE board_no = #{boardNo}
