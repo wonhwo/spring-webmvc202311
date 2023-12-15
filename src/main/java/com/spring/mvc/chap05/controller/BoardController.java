@@ -1,6 +1,7 @@
 package com.spring.mvc.chap05.controller;
 
 import com.spring.mvc.chap05.common.Page;
+import com.spring.mvc.chap05.common.PageMaker;
 import com.spring.mvc.chap05.dto.BoardListResponseDTO;
 import com.spring.mvc.chap05.dto.BoardWriteRequestDTO;
 import com.spring.mvc.chap05.service.BoardService;
@@ -24,7 +25,15 @@ public class BoardController {
         System.out.println("GET!!!/board/list");
         System.out.println(page);
         List<BoardListResponseDTO> dtoList = boardService.getList(page);
+
+        //페이징 계싼 알고리즘 적용
+        PageMaker pageMaker = new PageMaker(page, boardService.getCount());
+        System.out.println("pageMaker = " + pageMaker);
+        System.out.println("pageMaker = " + pageMaker);
+        int a=(int) Math.ceil((double) pageMaker.getTotalCount()/6);
         model.addAttribute("bList",dtoList);
+        model.addAttribute("maker",pageMaker);
+        model.addAttribute("a",a);
         return "chap05/list";
     }
     // 2. 글쓰기 화면요청 (/board/write : GET)

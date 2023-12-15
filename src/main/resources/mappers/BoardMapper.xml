@@ -22,6 +22,9 @@
         SET view_count = view_count + 1
         WHERE board_no = #{boardNo}
     </update>
+    <select id="count" resultType="int">
+        select count (*) FROM tbl_board
+    </select>
 
 
 </mapper>
