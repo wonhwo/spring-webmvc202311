@@ -3,7 +3,18 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.mvc.chap05.repsitory.BoardMapper">
     <select id="findAll" resultType="board">
-        select * from tbl_board ORDER BY board_no DESC
+        select * from tbl_board
+        <if test="type=='title'">
+            where title like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="type=='contet'">
+            where content like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="type=='tc'">
+            where title like CONCAT('%',#{keyword},'%')
+            or content like CONCAT('%',#{keyword},'%')
+        </if>
+        ORDER BY board_no DESC
         LIMIT #{pageStart},#{amount}
     </select>
     <select id="findOne" resultType="board">
@@ -24,6 +35,16 @@
     </update>
     <select id="count" resultType="int">
         select count (*) FROM tbl_board
+        <if test="type=='title'">
+            where title like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="type=='contet'">
+            where content like CONCAT('%',#{keyword},'%')
+        </if>
+        <if test="type=='tc'">
+            where title like CONCAT('%',#{keyword},'%')
+            or content like CONCAT('%',#{keyword},'%')
+        </if>
     </select>
 
 
